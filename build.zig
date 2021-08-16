@@ -15,6 +15,8 @@ pub fn build(b: *std.build.Builder) void {
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
+    exe.strip = true;
+    exe.single_threaded = true;
 
     const run_cmd = exe.run();
     run_cmd.step.dependOn(b.getInstallStep());

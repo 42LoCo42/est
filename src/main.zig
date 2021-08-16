@@ -95,7 +95,12 @@ pub fn main() !u8 {
         const msg = try std.io.getStdIn().readToEndAlloc(alloc, std.math.maxInt(usize));
         defer alloc.free(msg);
 
-        Ed25519.verify(sig, msg, public_key) catch return 1;
+        if (Ed25519.verify(sig, msg, public_key)) {
+            _ = try std.io.getStdErr().write("Good signature\n");
+        } else |_| {
+            _ = try std.io.getStdErr().write("Bad signature\n");
+            return 1;
+        }
     }
 
     return 0;
