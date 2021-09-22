@@ -14,10 +14,10 @@ pub fn main() !u8 {
     if (std.os.argv.len < 2) {
         std.log.err(
             \\Usage:
-                \\Generate key pair: {0s} -g <public key> <secret key>
-                \\Sign stdin: {0s} -s <public key> <secret key>
-                \\Verify stdin: {0s} -v <public key>
-                , .{std.os.argv[0]});
+            \\Generate key pair: {0s} -g <public key> <secret key>
+            \\Sign stdin: {0s} -s <public key> <secret key>
+            \\Verify stdin: {0s} -v <public key>
+        , .{std.os.argv[0]});
         return 1;
     }
 
@@ -70,13 +70,11 @@ pub fn main() !u8 {
         defer alloc.free(input);
 
         // output signature
-        _ = try std.io.getStdOut().writeAll(
-            &try Ed25519.sign(input, kp, blk: {
-                var buf: [Ed25519.noise_length]u8 = undefined;
-                try std.os.getrandom(&buf);
-                break :blk buf;
-            })
-        );
+        _ = try std.io.getStdOut().writeAll(&try Ed25519.sign(input, kp, blk: {
+            var buf: [Ed25519.noise_length]u8 = undefined;
+            try std.os.getrandom(&buf);
+            break :blk buf;
+        }));
     } else if (std.mem.eql(u8, cmd, "-v")) {
         // read public key
         var public_key: [Ed25519.public_length]u8 = undefined;
